@@ -76,7 +76,7 @@ public class Percolation {
 
             for (int neighborSite : neighborSites) {
                 // Does neighbor site exist within bounds of matrix?
-                if (neighborSite <= maxSiteIndex && neighborSite > 0) {
+                if (neighborSite <= maxSiteIndex && neighborSite >= 0) {
                     // if site is open, connect the sites
                     if (this.siteStatus[neighborSite]) {
                         sites.union(i, neighborSite);
