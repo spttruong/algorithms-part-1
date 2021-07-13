@@ -27,8 +27,8 @@ public class PercolationStats {
             // run a trial until percolation is reached
             while (!perc.percolates()) {
                 // randomize selection of sites
-                int row = StdRandom.uniform(1, n);  // Returns random int from 1 to n
-                int col = StdRandom.uniform(1, n);
+                int row = StdRandom.uniform(1, n + 1);  // Returns random int from 1 to n
+                int col = StdRandom.uniform(1, n + 1);
                 perc.open(row, col);
             }
 
@@ -73,9 +73,9 @@ public class PercolationStats {
         double confLo = stats.confidenceLo();
         double confHi = stats.confidenceHi();
 
-        System.out.println(String.format("%-20s= %f", "mean", mean));
-        System.out.println(String.format("%-20s= %f", "stddev", stddev));
-        System.out.println(String.format("%-20s= [%f, %f]", "95% confidence interval", confLo, confHi));
+        System.out.printf("%-20s= %f%n", "mean", mean);
+        System.out.printf("%-20s= %f%n", "stddev", stddev);
+        System.out.printf("%-20s= [%f, %f]%n", "95% confidence interval", confLo, confHi);
 
     }
 

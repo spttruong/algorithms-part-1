@@ -1,3 +1,4 @@
+import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
@@ -32,6 +33,7 @@ public class Percolation {
         this.virtualTopSiteID = 0;
         this.virtualBottomSiteID = n * n + 1;
 
+        // virtual sites need to be open
         siteStatus[virtualTopSiteID] = true;
         siteStatus[virtualBottomSiteID] = true;
 
@@ -154,4 +156,27 @@ public class Percolation {
         return (this.sites.find(virtualBottomSiteID) == this.sites.find(virtualTopSiteID));
     }
 
+    // test client
+    public static void main(String[] args) {
+        int n = Integer.parseInt(args[0]); // grid size
+        Percolation perc = new Percolation(n);
+
+        while (!perc.percolates()) {
+            // randomize selection of sites
+            int row = StdRandom.uniform(1, n + 1);  // Returns random int from 1 to n
+            int col = StdRandom.uniform(1, n + 1);
+
+            System.out.printf("(row: %d, col: %d)\n", row, col);
+
+            perc.open(row, col);
+
+            boolean fullness = perc.isFull(row, col);
+            System.out.println("full? " + fullness);
+
+            boolean percolating = perc.percolates();
+            System.out.println("percolates? " + percolating);
+
+        }
+
+    }
 }
