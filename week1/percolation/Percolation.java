@@ -2,7 +2,7 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
     private final int n;                      // stores grid size
-    private boolean[] siteStatus;       // true = open, false = closed
+    private final boolean[] siteStatus;       // true = open, false = closed
     private final WeightedQuickUnionUF sites; // data structure for each site
     private int totalOpenSites;
     private final int maxSiteIndex;           // sites IDs cannot exceed this
@@ -56,12 +56,12 @@ public class Percolation {
 
             // opening a top row site connects it to virtual top site
             // all indices less than n are top row sites
-            if (i < this.n) {
+            if (row == 1) {
                 sites.union(i, this.virtualTopSiteID);
             }
 
             // opening a bottom row site connects it to virtual bottom site
-            if (i >= ((this.n * this.n) - this.n)) {
+            if (row == n) {
                 sites.union(i, this.virtualBottomSiteID);
             }
 
@@ -74,12 +74,12 @@ public class Percolation {
             // defining neighbor sites (top, bottom, left, right)
             int[] neighborSites = {i - this.n, i + this.n, i - 1, i + 1};
 
-            for (int j = 0; j < neighborSites.length; j++) {
+            for (int neighborSite : neighborSites) {
                 // Does neighbor site exist within bounds of matrix?
-                if (neighborSites[j] <= maxSiteIndex && neighborSites[j] > 0) {
+                if (neighborSite <= maxSiteIndex && neighborSite > 0) {
                     // if site is open, connect the sites
-                    if (this.siteStatus[neighborSites[j]]) {
-                        sites.union(i, neighborSites[j]);
+                    if (this.siteStatus[neighborSite]) {
+                        sites.union(i, neighborSite);
                     }
                 }
             }
