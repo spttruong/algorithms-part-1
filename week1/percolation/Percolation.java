@@ -153,7 +153,7 @@ public class Percolation {
      * In other words, is there a bottom row site that is connected to the virtual top site?
      */
     public boolean percolates() {
-        return (this.sites.find(virtualBottomSiteID) == this.sites.find(virtualTopSiteID));
+        return (this.sites.find(virtualTopSiteID) == this.sites.find(virtualBottomSiteID));
     }
 
     // test client
@@ -161,6 +161,7 @@ public class Percolation {
         int n = Integer.parseInt(args[0]); // grid size
         Percolation perc = new Percolation(n);
 
+        int numOfSitesOpened = 0;
         while (!perc.percolates()) {
             // randomize selection of sites
             int row = StdRandom.uniform(1, n + 1);  // Returns random int from 1 to n
@@ -169,14 +170,16 @@ public class Percolation {
             System.out.printf("(row: %d, col: %d)\n", row, col);
 
             perc.open(row, col);
+            numOfSitesOpened += 1;
 
             boolean fullness = perc.isFull(row, col);
-            System.out.println("full? " + fullness);
+            System.out.printf("full         " + fullness + "%n");
 
             boolean percolating = perc.percolates();
-            System.out.println("percolates? " + percolating);
-
+            System.out.printf("percolates   " + percolating + "%n");
         }
+
+        System.out.print("Sites opened: " + numOfSitesOpened + "\n");
 
     }
 }
