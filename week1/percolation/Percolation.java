@@ -18,24 +18,19 @@ public class Percolation {
 
         this.n = n;
 
-        // this array keeps track of status of open/closed site
+        // keeps track of status of open/closed site, all sites start of "closed" (false)
         this.siteStatus = new boolean[(n * n) + 2];
+        for (int i = 0; i < this.siteStatus.length; i++) this.siteStatus[i] = false;
 
         // initialize n-by-n grid as nodes, +2 for the virtual top and bottom sites
         this.sites = new WeightedQuickUnionUF((n * n) + 2);
         this.sitesWithoutBottom = new WeightedQuickUnionUF((n * n) + 1);
-
-        // all sites start off blocked or "closed"
         this.totalOpenSites = 0;
         this.maxSiteIndex = n * n; // e.g. if n=3, sites range from 1 to 9
 
         // initialize virtual site (can be arbitrary so long as they are outside the n-by-n grid)
         this.virtualTopSiteID = 0;
         this.virtualBottomSiteID = n * n + 1;
-
-        // virtual sites need to be open
-        siteStatus[virtualTopSiteID] = true;
-        siteStatus[virtualBottomSiteID] = true;
 
     }
 
@@ -86,11 +81,11 @@ public class Percolation {
             sites.union(i, bottomNeighbor);
             sitesWithoutBottom.union(i, bottomNeighbor);
         }
-        if (withinGrid(leftNeighbor) && flatIsOpen(leftNeighbor)) {
+        if (withinGrid(leftNeighbor) && flatIsOpen(leftNeighbor) && hasLeftNeighbor(col)) {
             sites.union(i, leftNeighbor);
             sitesWithoutBottom.union(i, leftNeighbor);
         }
-        if (withinGrid(rightNeighbor) && flatIsOpen(rightNeighbor)) {
+        if (withinGrid(rightNeighbor) && flatIsOpen(rightNeighbor) && hasRightNeighbor(col)) {
             sites.union(i, rightNeighbor);
             sitesWithoutBottom.union(i, rightNeighbor);
         }
@@ -101,7 +96,7 @@ public class Percolation {
 
     }
 
-    // ********** HELPER METHODS **********
+    // ******************** HELPER METHODS ********************
 
     /* to translate 2D array coordinates to 1D.
      * By convention, row and column indices are integers between 1 and n.
@@ -125,7 +120,15 @@ public class Percolation {
         return this.siteStatus[index];
     }
 
-    // ********** END OF HELPER METHODS ***********
+    private boolean hasLeftNeighbor(int col) {
+        return !(col == 1);  // if site is in col 1, it has no left neighbor
+    }
+
+    private boolean hasRightNeighbor(int col) {
+        return !(col == this.n);  // if site is in col n, it has no right neighbor
+    }
+
+    // ******************** END OF HELPER METHODS ********************
 
     // returns the number of open sites
     public int numberOfOpenSites() {
@@ -161,16 +164,14 @@ public class Percolation {
         int n = Integer.parseInt(args[0]); // grid size
         Percolation perc = new Percolation(n);
 
-        int numOfSitesOpened = 0;
         while (!perc.percolates()) {
             // randomize selection of sites
             int row = StdRandom.uniform(1, n + 1);  // Returns random int from 1 to n
             int col = StdRandom.uniform(1, n + 1);
 
-            System.out.printf("(row: %d, col: %d)\n", row, col);
+            System.out.printf("(row: %d, col: %d) [%d]\n", row, col, perc.xyTo1d(row, col));
 
             perc.open(row, col);
-            numOfSitesOpened += 1;
 
             boolean fullness = perc.isFull(row, col);
             System.out.printf("full         " + fullness + "%n");
@@ -179,6 +180,7 @@ public class Percolation {
             System.out.printf("percolates   " + percolating + "%n");
         }
 
+        int numOfSitesOpened = perc.numberOfOpenSites();
         System.out.print("Sites opened: " + numOfSitesOpened + "\n");
 
     }
